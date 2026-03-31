@@ -1,13 +1,13 @@
 name: SEO Trend Analysis
 
 on:
-  workflow_dispatch: # מאפשר הפעלה ידנית בלחיצת כפתור ב-GitHub
+  workflow_dispatch:
 
 jobs:
   analyze:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # מאפשר לאקשן לשמור את הקובץ חזרה לתיקייה
+      contents: write
 
     steps:
       - name: Checkout code
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.10' # שדרוג גרסה
 
       - name: Install dependencies
         run: |
