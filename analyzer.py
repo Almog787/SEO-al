@@ -36,7 +36,7 @@ def analyze_with_gemini(text):
     Text: {text[:40000]}
     """
     
-    print("Sending to Gemini 1.5 Pro...")
+    print("Sending to gemini-2.5-pro...")
     response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
     return json.loads(response.text)
 
