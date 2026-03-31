@@ -1,41 +1,33 @@
-name: SEO Analysis and Static API Generation
+name: SEO AI Analysis
 
 on:
-  push:
-    branches:
-      - main
-  schedule:
-    - cron: '0 0 * * *' # הרצה אוטומטית פעם ביום בחצות
-  workflow_dispatch: # מאפשר הרצה ידנית מהממשק
-
-# הגדרת הרשאות חובה על מנת שהתהליך יוכל לכתוב את קובץ ה-JSON בחזרה ל-Repository
-permissions:
-  contents: write
+  workflow_dispatch: # הפעלה ידנית
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Install Dependencies
+        run: |
+          pip install beautifulsoup4 google-generativeai pytrends lxml
 
-    - name: List all files (Debug Step)
-      run: |
-        echo "Let's see where the files are:"
-        ls -R
+      - name: Run Analysis
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python analyzer.py
 
-    - name: Run SEO Analysis
-      env:
-        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      run: python analyze_seo.py
+      - name: Commit Results
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add public/ai_trends_analysis.json
+          git commit -m "Update SEO Analysis" || echo "No changes"
+          git push
