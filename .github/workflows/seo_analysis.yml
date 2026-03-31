@@ -30,7 +30,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: List all files (Debug Step)
+      run: |
+        echo "Let's see where the files are:"
+        ls -R
+
     - name: Run SEO Analysis
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      run: python analyze_seo.py # השינוי כאן: הרצה ישירות מתיקיית השורש
+      run: python analyze_seo.py
