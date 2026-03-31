@@ -18,7 +18,7 @@ def clean_html(html):
 def analyze_with_gemini(text):
     # שימוש בגרסה 1.5 Pro (החזקה ביותר לניתוח טקסט ארוך)
     # אם תרצה 2.0, פשוט שנה ל-'gemini-2.0-flash-exp' או 'gemini-2.0-pro-exp'
-    model = genai.GenerativeModel('gemini-1.5-pro')
+    model = genai.GenerativeModel('gemini-2.5-pro')
     
     prompt = f"""
     Analyze the following Hebrew website content for SEO.
