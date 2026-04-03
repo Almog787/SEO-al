@@ -1,0 +1,58 @@
+{
+    "Strait of Hormuz": {
+        "trend_score": 20,
+        "long_tail": [
+            "strait of hormuz map",
+            "strait of hormuz news"
+        ]
+    },
+    "Iran conflict": {
+        "trend_score": 13,
+        "long_tail": [
+            "iran conflict latest news",
+            "iran conflict news",
+            "iran conflict updates"
+        ]
+    },
+    "Global markets": {
+        "trend_score": 44,
+        "long_tail": [
+            "global markets group",
+            "global markets today",
+            "global markets news"
+        ]
+    },
+    "Gas prices": {
+        "trend_score": 25,
+        "long_tail": [
+            "gas prices usa",
+            "gas prices fredericksburg va",
+            "gas prices frederick md",
+            "gas prices uk"
+        ]
+    },
+    "Economic impact": {
+        "trend_score": 10,
+        "long_tail": [
+            "economic impact payment",
+            "economic impact definition",
+            "economic impacts of climate change",
+            "economic impact of iran war"
+        ]
+    },
+    "Oil supply": {
+        "trend_score": 27,
+        "long_tail": [
+            "oil supply shock",
+            "oil supply shortage fears",
+            "oil supply disruption"
+        ]
+    },
+    "Hormuz Chokepoint": {
+        "trend_score": 4,
+        "long_tail": [
+            "hormuz strait chokepoint",
+            "what is an oil chokepoint"
+        ]
+    }
+}
