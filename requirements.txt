@@ -1,4 +1,4 @@
 beautifulsoup4==4.12.2
-google-generativeai==0.8.3
+google-genai
 pytrends==4.9.2
 requests==2.31.0
