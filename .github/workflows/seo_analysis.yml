@@ -1,33 +1,37 @@
-name: SEO AI Analysis
+name: Global SEO Text Optimizer (US & EU)
 
 on:
-  workflow_dispatch: # הפעלה ידנית
+  workflow_dispatch:
 
 jobs:
-  build:
+  optimize_text:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up Python 3.10
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
       - name: Install Dependencies
         run: |
-          pip install beautifulsoup4 google-generativeai pytrends lxml
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Run Analysis
+      - name: Run Global SEO Optimizer
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python analyzer.py
+        run: python optimizer.py
 
-      - name: Commit Results
+      - name: Commit Optimized Content
         run: |
           git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add public/ai_trends_analysis.json
-          git commit -m "Update SEO Analysis" || echo "No changes"
+          git config --local user.name "SEO Optimizer Bot"
+          git add OPTIMIZED_CONTENT.md seo_data.json
+          git commit -m "🌍 SEO Optimized for US & Europe" || echo "No changes"
           git push
