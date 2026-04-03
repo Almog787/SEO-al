@@ -2,9 +2,10 @@ import json
 import time
 import os
 import requests
-import google.generativeai as genai
 from bs4 import BeautifulSoup
 from pytrends.request import TrendReq
+from google import genai
+from google.genai import types
 
 # Verify API Key
 API_KEY = os.getenv("GEMINI_API_KEY")
@@ -12,8 +13,12 @@ if not API_KEY:
     print("❌ Error: GEMINI_API_KEY is missing!")
     exit(1)
 
-genai.configure(api_key=API_KEY)
-model = genai.GenerativeModel('gemini-1.5-pro')
+# שימוש ב-SDK החדש של גוגל (google-genai)
+client = genai.Client(api_key=API_KEY)
+
+# מומלץ להשתמש ב-flash כדי לא להיחסם במגבלת החינם של ה-API
+# אם יש לך חשבון בתשלום / מכסה מספקת, תוכל לשנות ל-'gemini-2.5-pro'
+MODEL_ID = 'gemini-2.5-flash' 
 
 def extract_text_from_html(file_path):
     """Step 1: Extract clean text from HTML"""
@@ -42,7 +47,7 @@ def extract_text_from_html(file_path):
 
 def get_base_keywords(text):
     """Step 2: Ask AI for exactly 7 keyphrases targeting US & EU"""
-    print("🧠 AI is identifying top 7 keyphrases for US & EU markets...")
+    print(f"🧠 AI ({MODEL_ID}) is identifying top 7 keyphrases for US & EU markets...")
     prompt = f"""
     Analyze this English text. Your target audience is the United States and Europe.
     Identify the top 7 main SEO entities or keyphrases (1-3 words each) that are most critical for ranking in these global regions.
@@ -51,7 +56,15 @@ def get_base_keywords(text):
     
     Text: {text}
     """
-    response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
+    
+    # הפעלה באמצעות התחביר החדש
+    response = client.models.generate_content(
+        model=MODEL_ID,
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            response_mime_type="application/json",
+        )
+    )
     return json.loads(response.text)
 
 def check_trends_and_longtail(keywords):
@@ -91,7 +104,6 @@ def check_trends_and_longtail(keywords):
             except:
                 pass
                 
-        # Calculate average score across valid regions
         avg_score = (score_sum // valid_regions) if valid_regions > 0 else "Unknown (Blocked by Google)"
         
         trends_data[kw] = {
@@ -133,7 +145,14 @@ def optimize_text_with_ai(original_data, trends_data):
     }}
     """
     
-    response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
+    # הפעלה באמצעות התחביר החדש
+    response = client.models.generate_content(
+        model=MODEL_ID,
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            response_mime_type="application/json",
+        )
+    )
     return json.loads(response.text)
 
 def generate_markdown(optimized_result, trends_data):
@@ -141,9 +160,9 @@ def generate_markdown(optimized_result, trends_data):
     md = "# 🌍 Global SEO Text Optimization Report (US & Europe)\n\n"
     
     md += "## 🎯 AI Optimized Content (Ready to Copy-Paste!)\n\n"
-    md += f"**Optimized H1:**\n`{optimized_result['optimized_h1']}`\n\n"
-    md += f"**Optimized Meta Description:**\n`{optimized_result['optimized_meta_description']}`\n\n"
-    md += f"**Optimized Intro Paragraph (Includes Long-Tail Keywords):**\n> {optimized_result['optimized_intro_paragraph']}\n\n"
+    md += f"**Optimized H1:**\n`{optimized_result.get('optimized_h1', '')}`\n\n"
+    md += f"**Optimized Meta Description:**\n`{optimized_result.get('optimized_meta_description', '')}`\n\n"
+    md += f"**Optimized Intro Paragraph (Includes Long-Tail Keywords):**\n> {optimized_result.get('optimized_intro_paragraph', '')}\n\n"
     
     md += "---\n\n## 📈 Google Trends & Search Data (US & GB/EU)\n\n"
     md += "| Original Keyword | Avg Trend Score | Discovered Long-Tail Queries (US & EU) |\n"
@@ -167,17 +186,10 @@ def main():
         print("Created a sample input.html file. Please put your real English HTML code there and run again.")
     
     extracted = extract_text_from_html(html_file)
-    
-    # Get EXACTLY 7 keywords
     base_keywords = get_base_keywords(extracted['text'])
-    
-    # Check against US and EU data
     trends_data = check_trends_and_longtail(base_keywords)
-    
-    # Rewrite
     optimization_result = optimize_text_with_ai(extracted, trends_data)
     
-    # Save output
     with open('seo_data.json', 'w', encoding='utf-8') as f:
         json.dump({"trends": trends_data, "optimization": optimization_result}, f, ensure_ascii=False, indent=4)
         
