@@ -1,13 +1,13 @@
 name: Global SEO Text Optimizer (US & EU)
 
 on:
-  workflow_dispatch: # מאפשר הרצה ידנית בלחיצת כפתור
+  workflow_dispatch:
 
 jobs:
   optimize_text:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # חובה כדי שהבוט יוכל לשמור קבצים
+      contents: write
 
     steps:
       - name: Checkout Code
@@ -21,7 +21,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install beautifulsoup4 google-genai pytrends requests
+          pip install beautifulsoup4 google-genai pytrends requests pandas
 
       - name: Run Global SEO Optimizer
         env:
@@ -32,6 +32,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "SEO Optimizer Bot"
-          git add OPTIMIZED_ARTICLE.html SEO_CHANGELOG.md seo_data.json
-          git commit -m "🌍 Generated Optimized HTML and SEO Changelog" || echo "No changes to commit"
+          # הוספת הקבצים הספציפיים שנוצרו בשורש
+          git add OPTIMIZED_ARTICLE.html SEO_CHANGELOG.md seo_data.json || echo "Some files were not found"
+          git commit -m "🌍 SEO Update: Optimized HTML & Changelog" || echo "No changes to commit"
           git push
