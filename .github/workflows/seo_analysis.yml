@@ -32,7 +32,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "SEO Optimizer Bot"
-          # הוספת הקבצים הספציפיים שנוצרו בשורש
-          git add OPTIMIZED_ARTICLE.html SEO_CHANGELOG.md seo_data.json || echo "Some files were not found"
-          git commit -m "🌍 SEO Update: Optimized HTML & Changelog" || echo "No changes to commit"
+          git add OPTIMIZED_ARTICLE.html SEO_CHANGELOG.md seo_data.json || echo "Files not found"
+          git commit -m "🌍 SEO Update: Optimized with Gemini 1.5 Pro" || echo "No changes"
           git push
