@@ -20,7 +20,7 @@ if not API_KEY:
     exit(1)
 
 client = genai.Client(api_key=API_KEY)
-MODEL_ID = 'gemini-2.5-flash' 
+MODEL_ID = 'gemini-2.5-pro' 
 
 def parse_ai_json_response(response_text):
     try:
